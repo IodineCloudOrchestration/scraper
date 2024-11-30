@@ -1,0 +1,28 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/dotenv@*": "0.225.2"
+  },
+  "jsr": {
+    "@std/dotenv@0.225.2": {
+      "integrity": "e2025dce4de6c7bca21dece8baddd4262b09d5187217e231b033e088e0c4dd23"
+    }
+  },
+  "remote": {
+    "https://deno.land/std@0.203.0/dotenv/mod.ts": "1da8c6d0e7f7d8a5c2b19400b763bc11739df24acec235dda7ea2cfd3d300057"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@1"
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@types/node@^22.10.0",
+        "npm:puppeteer@^23.9.0",
+        "npm:ts-node@^10.9.2",
+        "npm:typescript@^5.7.2",
+        "npm:zod@^3.23.8"
+      ]
+    }
+  }
+}
