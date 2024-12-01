@@ -1,7 +1,10 @@
-import "jsr:@std/dotenv/load";
+import {config} from "dotenv";
+
+config();
 
 export function getEnv(name: string): string {
-  const value = Deno.env.get(name);
+  const value = process.env[name];
   if (!value) throw Error(`Missing Environment Variable: "${name}"`);
   return value;
 }
+

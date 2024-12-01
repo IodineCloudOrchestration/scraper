@@ -1,5 +1,5 @@
-import { Product } from "../definitions.ts";
-import { getEnv } from "../config.ts";
+import {Product} from "../definitions";
+import {getEnv} from "../config";
 
 export async function fetchEbayProductsByQuery(
   query: string,
@@ -13,12 +13,12 @@ export async function fetchEbayProductsByQuery(
   url.searchParams.set("q", query);
   url.searchParams.set("limit", String(count));
 
-  const headers = new Headers({ Authorization: `Bearer ${token}` });
-  let resp = await fetch(url, { headers });
+  const headers = new Headers({Authorization: `Bearer ${token}`});
+  let resp = await fetch(url, {headers});
   if (resp.status === 401) {
     token = await getToken(); // refresh token
     headers.set("Authorization", `Bearer ${token}`);
-    resp = await fetch(url, { headers });
+    resp = await fetch(url, {headers});
   }
   if (!resp.ok) {
     throw Error(`Response: ${resp.status} | ${await resp.text()}`);
@@ -49,7 +49,7 @@ async function getToken(): Promise<string> {
   const headers = {
     Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
   };
-  const resp = await fetch(url, { headers, method: "POST" });
+  const resp = await fetch(url, {headers, method: "POST"});
   if (!resp.ok) {
     throw Error(`Response: ${resp.status} | ${await resp.text()}`);
   }

@@ -1,6 +1,5 @@
-import { EvaluateFuncWith } from "puppeteer";
 import { Product } from "../definitions.ts";
-import { Page, launch } from "puppeteer";
+import { launch, Page } from "puppeteer";
 
 export async function fetchZalandoProductsByQuery(
   page: Page,

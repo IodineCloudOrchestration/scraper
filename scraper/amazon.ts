@@ -1,37 +1,54 @@
-import { launch, Page } from "puppeteer";
-import { Product } from "../definitions.ts";
+import {Page} from "puppeteer";
+import {Product} from "../definitions";
+import {nextTick} from "process";
 
 export async function fetchAmazonProductsByQuery(
   page: Page,
   query: string,
-  count: number,
+  limit: number,
 ): Promise<Product[]> {
-  let pageNumber = 1;
-  let totalProducts: Product[] = [];
-  while (totalProducts.length < count) {
-    await page.goto(getUrl({ query, pageNumber: pageNumber++ }), {});
-    const products = await getProducts(page);
-    if (!products.length) break; // not found
-    totalProducts = totalProducts.concat(products);
+  await page.goto(`https://www.amazon.com/s?k=${query}`);
+
+  // check if I been redirected to category page
+  const url = new URL(page.url());
+  if (!url.searchParams.get("k")) {
+    // query parameter will disappear if that happens
+    url.searchParams.set("k", query);
+    await page.goto(url.toString());
   }
-  return totalProducts.slice(0, count);
+
+  let totalProducts: Product[] = [];
+  while (true) {
+    const products = await getProducts(page);
+    totalProducts = totalProducts.concat(products);
+    if (totalProducts.length >= limit) break // enough products
+
+    const nextPageUrl = await getNextPageUrl(page);
+    if (nextPageUrl === undefined) break // there are no more pages
+    await page.goto(nextPageUrl);
+  }
+  return totalProducts.slice(0, limit);
 }
 
-function getUrl(params: { query: string; pageNumber: number }) {
-  return `https://www.amazon.com/s?k=${params.query}&page=${params.pageNumber}`;
+function getNextPageUrl(page: Page): Promise<undefined | string> {
+  return page.evaluate(() => {
+    return document.querySelector<HTMLAnchorElement>(
+      'a[aria-label^="Go to next page"]',
+    )?.href;
+  });
 }
 
 function getProducts(page: Page): Promise<Product[]> {
   const selector = '[data-component-type="s-search-result"]';
   return page.$$eval(selector, (results) => {
-    const data: Product[] = [];
+    const products: Product[] = [];
     for (const res of results) {
       const priceElement = res.querySelector(".a-price > .a-offscreen");
-      if (priceElement === null) throw Error("There is no price element");
+      if (priceElement === null) continue; // item out of stock or cannot be delivered
       const price = Number(String(priceElement.textContent).slice(1));
-      if (Number.isNaN(price))
+      if (Number.isNaN(price)) {
         throw Error(`Invalid price: ${priceElement.textContent}`);
-
+      }
       const titleLink = res.querySelector<HTMLAnchorElement>(
         '[data-cy="title-recipe"] > h2 > a',
       );
@@ -43,7 +60,7 @@ function getProducts(page: Page): Promise<Product[]> {
       const image = res.querySelector<HTMLImageElement>(".s-image");
       if (image === null) throw Error("There is no image element");
 
-      data.push({
+      products.push({
         price,
         name: titleLink.textContent,
         productUrl: titleLink.href,
@@ -51,6 +68,6 @@ function getProducts(page: Page): Promise<Product[]> {
         valuta: "USD",
       });
     }
-    return data;
+    return products;
   });
 }
