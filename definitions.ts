@@ -5,3 +5,13 @@ export interface Product {
   productUrl: string;
   imageUrl: string;
 }
+
+export interface Task {
+  id: string,
+  query: string
+}
+
+export interface Result {
+  id: string,
+  products: Product[]
+}

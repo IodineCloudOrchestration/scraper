@@ -8,7 +8,7 @@ afterAll(async () => {
 });
 
 beforeAll(async () => {
-  browser = await launch({headless: false});
+  browser = await launch();
 });
 
 test("fetch-products", async () => {

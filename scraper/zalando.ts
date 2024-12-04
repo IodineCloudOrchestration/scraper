@@ -40,7 +40,7 @@ async function getProducts(page: Page): Promise<Product[]> {
     for (const article of articles) {
 
       const nameElement = article.querySelector("header > div");
-      if (!nameElement) throw Error("There is no name element.")
+      if (!nameElement) continue // skip add
 
 
       const priceSection = article.querySelector("section > p")

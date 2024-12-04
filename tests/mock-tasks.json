@@ -1,0 +1,18 @@
+[
+  {"id": "0", "query": "lego"},
+  {"id": "1", "query": "lego"},
+  {"id": "2", "query": "car"},
+  {"id": "3", "query": "black"},
+  {"id": "4", "query": "res"},
+  {"id": "5", "query": "blue"},
+  {"id": "6", "query": "jacket"},
+  {"id": "7", "query": "magic"},
+  {"id": "8", "query": "lamp"},
+  {"id": "9", "query": "sea"},
+  {"id": "a", "query": "play cards"},
+  {"id": "b", "query": "book"},
+  {"id": "c", "query": "night"},
+  {"id": "d", "query": "chess"},
+  {"id": "e", "query": "mirror pink"},
+  {"id": "f", "query": "bottle"}
+]
