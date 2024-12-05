@@ -34,10 +34,8 @@ async function getProducts(page: Page): Promise<Product[]> {
   return page.$$eval("article", (articles) => {
     const data: Product[] = [];
     for (const article of articles) {
-
       const nameElement = article.querySelector("header > div");
       if (!nameElement) continue // skip add
-
 
       const priceSection = article.querySelector("section > p")
       if (!priceSection) throw Error("There is no name section element");

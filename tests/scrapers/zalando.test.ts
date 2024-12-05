@@ -13,7 +13,7 @@ beforeAll(async () => {
 
 test("fetch-products", async () => {
   const page = await browser.newPage();
-  const products = await fetchZalandoProductsByQuery(page, "man", 100);
+  const products = await fetchZalandoProductsByQuery(page, "shirt", 100);
   expect(products.length).toBe(100);
 }, 20_000);
 

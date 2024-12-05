@@ -1,21 +1,21 @@
 import {EventEmitter} from "node:events"
-import {Result, Task} from "../definitions";
-import puppeteer, {Browser, Page} from "puppeteer";
+import {Task, TaskWorker} from "../definitions";
 
-export abstract class BaseService extends EventEmitter {
+
+export abstract class BaseTaskService extends EventEmitter {
   taskResolves: ((task: Task) => void)[]
   tasks: Task[]
-  browser: Browser
   isShutDown: boolean
 
   runWorkersCount: number
   limitWorkersCount: number
 
-  constructor(browser: Browser) {
+  abstract createTaskWorker(): Promise<TaskWorker>
+
+  protected constructor() {
     super()
     this.tasks = []
     this.taskResolves = []
-    this.browser = browser
     this.limitWorkersCount = 0
     this.runWorkersCount = 0
     this.isShutDown = false
@@ -45,28 +45,27 @@ export abstract class BaseService extends EventEmitter {
         this.once("workers:down", () => res(null))
       })
     }
-    await this.browser.close()
     this.emit("shutdown")
   }
 
   private async runWorker(): Promise<void> {
-    const page = await this.browser.newPage()
-    try {
-      while (true) {
-        const task = await this.waitForTask()
-        if (task === null) return // shut down worker
-        const result = await this.doTask(page, task)
-        this.emit("result", result)
-        await page.goto("about:blank")
+    const worker = await this.createTaskWorker()
+    while (true) {
+      const task = await this.waitForTask()
+      if (task === null) {
+        if (worker.close) {
+          await worker.close()
+        }
+        return
       }
-    } catch (e) {
-      throw e
-    } finally {
-      await page.close()
+      try {
+        const result = await worker.doTask(task)
+        this.emit("result", result)
+      } catch (e) {
+        this.emit("task:error", task, e)
+      }
     }
   }
-
-  abstract doTask(page: Page, task: Task): Promise<Result>
 
   addTasks(tasks: Task[]): void {
     if (this.isShutDown) throw Error("Service is already shut down")
@@ -80,7 +79,7 @@ export abstract class BaseService extends EventEmitter {
 
   private async waitForTask(): Promise<Task | null> {
     if (this.runWorkersCount > this.limitWorkersCount) {
-      return null // shut down signal
+      return null // close worker signal
     }
     if (this.tasks.length === 0) {
       return new Promise(res => {

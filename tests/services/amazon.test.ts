@@ -8,7 +8,7 @@ const pathToMockTasks = path.join(__dirname, "mock-tasks.json")
 let browser: Browser
 
 beforeAll(async () => {
-  browser = await launch();
+  browser = await launch({headless: true});
 });
 
 afterAll(async () => {

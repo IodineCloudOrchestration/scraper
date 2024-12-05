@@ -15,3 +15,8 @@ export interface Result {
   id: string,
   products: Product[]
 }
+
+export interface TaskWorker {
+  doTask: (task: Task) => Promise<Result>
+  close?: () => Promise<void>,
+}
