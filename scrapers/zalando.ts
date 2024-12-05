@@ -7,7 +7,7 @@ export async function fetchZalandoProductsByQuery(
   count: number,
 ): Promise<Product[]> {
   await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)');
-  await page.goto(`https://www.zalando.hr/katalog/?q=${query}`);
+  await page.goto(`https://www.zalando.hr/katalog/?q="${query}"`);
   let totalProducts: Product[] = [];
   while (true) {
     const products = await getProducts(page);

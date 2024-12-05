@@ -15,7 +15,7 @@ afterAll(async () => {
   await browser.close();
 });
 
-test("amazon-service", async () => {
+test("aliexpress-service", async () => {
   const tasks = new TestTasks(pathToMockTasks)
 
   const aliexpress = new AliExpress(browser)
@@ -24,7 +24,6 @@ test("amazon-service", async () => {
 
   aliexpress.on("tasks:empty", () => {
     aliexpress.addTasks(tasks.getNextTasks(6))
-    aliexpress.setWorkersCount(5)
   })
   const results: Result[] = []
   aliexpress.on("result", (res: Result) => {
@@ -33,7 +32,7 @@ test("amazon-service", async () => {
       aliexpress.shutDown()
     }
   })
-  aliexpress.setWorkersCount(2)
+  aliexpress.setWorkersCount(5)
 
   await new Promise(res => aliexpress.on("shutdown", () => res(null)))
 

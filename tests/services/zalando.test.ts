@@ -36,7 +36,7 @@ test("zalando-service", async () => {
     }
   })
   // run by setting workersCount
-  zalando.setWorkersCount(6)
+  zalando.setWorkersCount(5)
 
   await new Promise(res => zalando.once("shutdown", () => res(null)))
 
