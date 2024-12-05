@@ -8,7 +8,7 @@ const pathToMockTasks = path.join(__dirname, "mock-tasks.json")
 let browser: Browser
 
 beforeAll(async () => {
-  browser = await launch({headless: false});
+  browser = await launch();
 });
 
 afterAll(async () => {
@@ -36,7 +36,7 @@ test("zalando-service", async () => {
     }
   })
   // run by setting workersCount
-  zalando.setWorkersCount(3)
+  zalando.setWorkersCount(6)
 
   await new Promise(res => zalando.once("shutdown", () => res(null)))
 

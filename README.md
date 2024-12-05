@@ -10,4 +10,4 @@ npx jest --runInBand
 
 ## Known problems
 - Aliexpress bot detection
-- Zalando bot detection
+- Zalando some queries
