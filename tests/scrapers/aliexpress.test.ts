@@ -1,5 +1,5 @@
 import { Browser, launch } from "puppeteer";
-import { fetchAliExpressProductByQuery } from "../scraper/aliexpress";
+import { fetchAliExpressProductByQuery } from "../../scrapers/aliexpress";
 
 let browser: Browser;
 
@@ -14,5 +14,5 @@ afterAll(async () => {
 });
 
 beforeAll(async () => {
-  browser = await launch();
+  browser = await launch({headless: false});
 });

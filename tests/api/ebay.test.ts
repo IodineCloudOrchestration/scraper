@@ -1,4 +1,4 @@
-import { fetchEbayProductsByQuery } from "../api/ebay";
+import { fetchEbayProductsByQuery } from "../../api/ebay";
 
 test("ebay-fetch-products", async () => {
   const products = await fetchEbayProductsByQuery("Iphone", 100);

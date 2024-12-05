@@ -1,13 +1,14 @@
 import {BaseService} from "./base";
 import puppeteer, {Page} from "puppeteer";
-import {fetchAmazonProductsByQuery} from "../scrapers/amazon"
+import {fetchAliExpressProductByQuery} from "../scrapers/aliexpress"
 import {Result, Task} from "../definitions"
 
-export class Amazon extends BaseService {
+
+export class AliExpress extends BaseService {
   async doTask(page: Page, task: Task): Promise<Result> {
     return {
       id: task.id,
-      products: await fetchAmazonProductsByQuery(page, task.query, 10)
+      products: await fetchAliExpressProductByQuery(page, task.query, 10)
     }
   }
 }

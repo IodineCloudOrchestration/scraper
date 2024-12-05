@@ -1,5 +1,5 @@
 import fs, {PathOrFileDescriptor} from "fs"
-import {Task} from "../definitions";
+import {Task} from "../../definitions";
 
 export class TestTasks {
   private index: number
@@ -15,7 +15,7 @@ export class TestTasks {
     this.index += tasks.length
     return tasks
   }
-  
+
   get totalLength() {
     return this.tasks.length
   }

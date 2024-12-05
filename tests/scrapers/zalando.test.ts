@@ -1,5 +1,5 @@
 import {Browser, launch} from "puppeteer";
-import {fetchZalandoProductsByQuery} from "../scraper/zalando";
+import {fetchZalandoProductsByQuery} from "../../scrapers/zalando";
 
 let browser: Browser;
 

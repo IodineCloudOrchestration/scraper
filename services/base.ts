@@ -1,6 +1,6 @@
 import {EventEmitter} from "node:events"
 import {Result, Task} from "../definitions";
-import {Browser, Page} from "puppeteer";
+import puppeteer, {Browser, Page} from "puppeteer";
 
 export abstract class BaseService extends EventEmitter {
   taskResolves: ((task: Task) => void)[]
@@ -22,7 +22,7 @@ export abstract class BaseService extends EventEmitter {
   }
 
   setWorkersCount(count: number): void {
-    if (this.isShutDown) throw Error("Service is shut down")
+    if (this.isShutDown) throw Error("Service is already shut down")
     this.limitWorkersCount = count
     while (this.runWorkersCount < this.limitWorkersCount) {
       this.runWorkersCount++
@@ -36,6 +36,7 @@ export abstract class BaseService extends EventEmitter {
   }
 
   async shutDown(): Promise<void> {
+    if (this.isShutDown) throw Error("Service is already shut down")
     this.isShutDown = true
     if (this.runWorkersCount) {
       this.limitWorkersCount = 0
@@ -45,9 +46,10 @@ export abstract class BaseService extends EventEmitter {
       })
     }
     await this.browser.close()
+    this.emit("shutdown")
   }
 
-  async runWorker(): Promise<void> {
+  private async runWorker(): Promise<void> {
     const page = await this.browser.newPage()
     try {
       while (true) {
@@ -67,7 +69,7 @@ export abstract class BaseService extends EventEmitter {
   abstract doTask(page: Page, task: Task): Promise<Result>
 
   addTasks(tasks: Task[]): void {
-    if (this.isShutDown) throw Error("Service is shut down")
+    if (this.isShutDown) throw Error("Service is already shut down")
     let index = 0
     while (this.taskResolves.length) {
       const res = this.taskResolves.shift()
@@ -76,7 +78,7 @@ export abstract class BaseService extends EventEmitter {
     this.tasks = this.tasks.concat(tasks.slice(index))
   }
 
-  async waitForTask(): Promise<Task | null> {
+  private async waitForTask(): Promise<Task | null> {
     if (this.runWorkersCount > this.limitWorkersCount) {
       return null // shut down signal
     }

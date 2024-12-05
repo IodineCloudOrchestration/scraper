@@ -1,5 +1,5 @@
 import {Browser, launch} from "puppeteer";
-import {fetchAmazonProductsByQuery} from "../scraper/amazon";
+import {fetchAmazonProductsByQuery} from "../../scrapers/amazon";
 
 let browser: Browser;
 
