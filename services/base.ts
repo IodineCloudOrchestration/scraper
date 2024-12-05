@@ -12,7 +12,7 @@ export abstract class BaseTaskService extends EventEmitter {
 
   abstract createTaskWorker(): Promise<TaskWorker>
 
-  protected constructor() {
+  constructor() {
     super()
     this.tasks = []
     this.taskResolves = []
