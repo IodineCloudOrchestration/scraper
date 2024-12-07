@@ -1,5 +1,6 @@
 import {S3Client, PutObjectCommand} from '@aws-sdk/client-s3';
 import {getEnv} from "../config";
+import {logger} from "../logger";
 
 const s3Client = new S3Client({
   region: getEnv("AWS_S3_BUCKET_REGION"),
@@ -16,8 +17,9 @@ export async function uploadFile(filename: string, content: string): Promise<voi
     Body: content,
   };
   try {
-    const data = await s3Client.send(new PutObjectCommand(uploadParams));
+    await s3Client.send(new PutObjectCommand(uploadParams));
+    logger.info(`${filename} susccessfuly uploaded to S3`)
   } catch (err) {
-    console.error('Error uploading file:', err);
+    logger.debug('Error uploading file:', err);
   }
 }
